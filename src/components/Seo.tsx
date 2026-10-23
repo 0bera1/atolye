@@ -8,10 +8,12 @@ interface SeoProps {
   description: string
   path: string
   app?: { name: string; category: string }
+  noindex?: boolean
 }
 
-export function Seo({ title, description, path, app }: SeoProps) {
-  const url = `${SITE_URL}${BASE}${path}`
+export function Seo({ title, description, path, app, noindex }: SeoProps) {
+  // GitHub Pages serves directories with a trailing slash.
+  const url = `${SITE_URL}${BASE}${path}${path.endsWith('/') ? '' : '/'}`
   const jsonLd = app
     ? JSON.stringify({
         '@context': 'https://schema.org',
@@ -36,7 +38,8 @@ export function Seo({ title, description, path, app }: SeoProps) {
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       {SITE_URL && <meta property="og:url" content={url} />}
-      {SITE_URL && <link rel="canonical" href={url} />}
+      {SITE_URL && !noindex && <link rel="canonical" href={url} />}
+      {noindex && <meta name="robots" content="noindex" />}
       <meta name="twitter:card" content="summary" />
       {jsonLd && <script type="application/ld+json">{jsonLd}</script>}
     </Head>

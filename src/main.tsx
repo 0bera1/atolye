@@ -25,6 +25,7 @@ const routes: RouteRecord[] = [
       },
       { path: 'gizlilik', element: <Privacy />, entry: 'src/app/StaticPages.tsx' },
       { path: 'hakkinda', element: <About />, entry: 'src/app/StaticPages.tsx' },
+      { path: '404', element: <NotFound />, entry: 'src/app/NotFound.tsx' },
       { path: '*', element: <NotFound /> },
     ],
   },

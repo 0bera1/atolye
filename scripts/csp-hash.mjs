@@ -1,7 +1,14 @@
 // Adds sha256 hashes of each page's inline scripts to its CSP meta tag,
 // so the policy can stay free of 'unsafe-inline' for scripts.
 import { createHash } from 'node:crypto'
-import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import {
+  copyFileSync,
+  existsSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs'
 import { join } from 'node:path'
 
 function walk(dir) {
@@ -30,3 +37,6 @@ for (const file of walk('dist')) {
   }
 }
 console.log(`[csp-hash] patched ${patched} pages`)
+
+// GitHub Pages serves 404.html for unknown paths.
+if (existsSync('dist/404/index.html')) copyFileSync('dist/404/index.html', 'dist/404.html')
