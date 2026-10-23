@@ -37,6 +37,11 @@ export function Layout() {
             <Link to="/hakkinda">Hakkında</Link>
           </nav>
         </div>
+        <div className={`container ${styles.credit}`}>
+          <a href="https://beraekimci.com.tr" target="_blank" rel="noopener noreferrer">
+            Design by bera
+          </a>
+        </div>
       </footer>
     </>
   )
