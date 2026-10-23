@@ -141,3 +141,16 @@
 .dragging {
   opacity: 0.5;
 }
+
+/* Long names keep room to read: controls drop to their own row when space is tight. */
+.item {
+  flex-wrap: wrap;
+}
+
+.fname {
+  min-width: 55%;
+}
+
+.iconBtn:first-of-type {
+  margin-left: auto;
+}

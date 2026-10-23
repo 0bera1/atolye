@@ -138,3 +138,9 @@ button {
     scroll-behavior: auto !important;
   }
 }
+
+input[type='range'],
+input[type='checkbox'],
+input[type='radio'] {
+  accent-color: var(--accent);
+}
