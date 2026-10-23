@@ -9,6 +9,15 @@ export function Home() {
   const [slug, setSlug] = useState('pdf-birlestir')
   const tool = getTool(slug) ?? TOOLS[0]
 
+  function select(next: string) {
+    const t = getTool(next)
+    if (t?.fullReload) {
+      window.location.assign(`${import.meta.env.BASE_URL}araclar/${t.slug}/`)
+      return
+    }
+    setSlug(next)
+  }
+
   return (
     <>
       <Seo
@@ -35,7 +44,7 @@ export function Home() {
           </h2>
           <div className={styles.grid}>
             {TOOLS.map((t) => (
-              <DrawerCard key={t.slug} tool={t} selected={t.slug === slug} onSelect={setSlug} />
+              <DrawerCard key={t.slug} tool={t} selected={t.slug === slug} onSelect={select} />
             ))}
           </div>
         </section>

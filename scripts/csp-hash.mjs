@@ -11,13 +11,19 @@ function walk(dir) {
   })
 }
 
+// arka-plan-sil: its model runtime generates functions at load time, so only that page
+// gets 'unsafe-eval'. Every other page keeps the strict policy.
 let patched = 0
 for (const file of walk('dist')) {
   const html = readFileSync(file, 'utf8')
-  const hashes = [...html.matchAll(/<script(?![^>]*\bsrc=)(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/g)]
-    .map((m) => `'sha256-${createHash('sha256').update(m[1]).digest('base64')}'`)
+  const hashes = [
+    ...html.matchAll(
+      /<script(?![^>]*\bsrc=)(?![^>]*type="application\/ld\+json")[^>]*>([\s\S]*?)<\/script>/g,
+    ),
+  ].map((m) => `'sha256-${createHash('sha256').update(m[1]).digest('base64')}'`)
   if (!hashes.length) continue
-  const out = html.replace(/(script-src 'self')/, `$1 ${[...new Set(hashes)].join(' ')}`)
+  const extra = file.includes('arka-plan-sil') ? ["'unsafe-eval'"] : []
+  const out = html.replace(/(script-src 'self')/, `$1 ${[...new Set(hashes), ...extra].join(' ')}`)
   if (out !== html) {
     writeFileSync(file, out)
     patched++

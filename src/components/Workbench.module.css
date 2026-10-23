@@ -93,7 +93,7 @@
   white-space: nowrap;
 }
 
-.remove {
+.iconBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -105,7 +105,7 @@
   color: var(--muted);
 }
 
-.remove:hover {
+.iconBtn:hover:not(:disabled) {
   background: var(--soft);
   color: var(--text);
 }
@@ -131,4 +131,13 @@
   border-top: 1px solid var(--line);
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+.iconBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.dragging {
+  opacity: 0.5;
 }

@@ -1,5 +1,6 @@
-import { useId, useState, type DragEvent } from 'react'
+import { Suspense, useId, useState, type DragEvent } from 'react'
 import { formatBytes, LARGE_FILE_BYTES } from '../lib/format'
+import { PANELS } from '../tools/panels'
 import type { ToolMeta } from '../tools/registry'
 import { Icon } from './Icon'
 import styles from './Workbench.module.css'
@@ -7,7 +8,9 @@ import styles from './Workbench.module.css'
 export function Workbench({ tool }: { tool: ToolMeta }) {
   const [files, setFiles] = useState<File[]>([])
   const [over, setOver] = useState(false)
+  const [dragIndex, setDragIndex] = useState<number | null>(null)
   const inputId = useId()
+  const Panel = PANELS[tool.slug]
 
   function add(list: FileList | null) {
     if (!list) return
@@ -21,7 +24,18 @@ export function Workbench({ tool }: { tool: ToolMeta }) {
     add(e.dataTransfer.files)
   }
 
+  function move(from: number, to: number) {
+    if (to < 0 || to >= files.length || from === to) return
+    setFiles((prev) => {
+      const next = [...prev]
+      const [item] = next.splice(from, 1)
+      next.splice(to, 0, item)
+      return next
+    })
+  }
+
   const large = files.some((f) => f.size > LARGE_FILE_BYTES)
+  const sortable = tool.multiple && files.length > 1
 
   return (
     <section className={styles.bench} aria-labelledby={`${inputId}-t`}>
@@ -61,13 +75,51 @@ export function Workbench({ tool }: { tool: ToolMeta }) {
       {files.length > 0 && (
         <ul className={styles.list} aria-label="Seçilen dosyalar">
           {files.map((f, i) => (
-            <li key={`${f.name}-${i}`} className={styles.item}>
+            <li
+              key={`${f.name}-${f.size}-${i}`}
+              className={`${styles.item} ${dragIndex === i ? styles.dragging : ''}`}
+              draggable={sortable}
+              onDragStart={() => setDragIndex(i)}
+              onDragEnd={() => setDragIndex(null)}
+              onDragOver={(e) => {
+                if (dragIndex !== null) e.preventDefault()
+              }}
+              onDrop={(e) => {
+                if (dragIndex === null) return
+                e.preventDefault()
+                e.stopPropagation()
+                move(dragIndex, i)
+                setDragIndex(null)
+              }}
+            >
               <Icon name="file" size={18} />
               <span className={styles.fname}>{f.name}</span>
               <span className={`${styles.size} mono`}>{formatBytes(f.size)}</span>
+              {sortable && (
+                <>
+                  <button
+                    type="button"
+                    className={styles.iconBtn}
+                    aria-label={`${f.name} dosyasını yukarı taşı`}
+                    disabled={i === 0}
+                    onClick={() => move(i, i - 1)}
+                  >
+                    <Icon name="up" size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.iconBtn}
+                    aria-label={`${f.name} dosyasını aşağı taşı`}
+                    disabled={i === files.length - 1}
+                    onClick={() => move(i, i + 1)}
+                  >
+                    <Icon name="down" size={16} />
+                  </button>
+                </>
+              )}
               <button
                 type="button"
-                className={styles.remove}
+                className={styles.iconBtn}
                 aria-label={`${f.name} dosyasını kaldır`}
                 onClick={() => setFiles((prev) => prev.filter((_, j) => j !== i))}
               >
@@ -85,12 +137,13 @@ export function Workbench({ tool }: { tool: ToolMeta }) {
         </p>
       )}
 
-      <button type="button" className="btn btn-primary" disabled style={{ width: '100%' }}>
-        İşlemi başlat
-      </button>
-      <div aria-live="polite" className={styles.live}>
-        Bu araç henüz hazır değil.
-      </div>
+      {Panel ? (
+        <Suspense fallback={<p className={styles.live}>Araç yükleniyor…</p>}>
+          <Panel files={files} />
+        </Suspense>
+      ) : (
+        <p className={styles.live}>Bu araç henüz hazır değil.</p>
+      )}
 
       <p className={styles.note}>
         <Icon name="lock" size={16} />

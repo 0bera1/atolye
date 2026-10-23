@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { ToolLink } from '../components/ToolLink'
 import { Icon } from '../components/Icon'
 import { Seo } from '../components/Seo'
 import { TOOLS } from '../tools/registry'
@@ -17,14 +17,14 @@ export function ToolsIndex() {
         {TOOLS.map((t) => (
           <li key={t.slug}>
             {t.status === 'ready' ? (
-              <Link to={`/araclar/${t.slug}`} className={styles.toolRow}>
+              <ToolLink tool={t} className={styles.toolRow}>
                 <Icon name={t.icon} />
                 <span>
                   <strong>{t.name}</strong>
                   <br />
                   <span className={styles.muted}>{t.short}</span>
                 </span>
-              </Link>
+              </ToolLink>
             ) : (
               <div className={`${styles.toolRow} ${styles.soon}`}>
                 <Icon name={t.icon} />

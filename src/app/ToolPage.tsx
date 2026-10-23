@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import { Seo } from '../components/Seo'
+import { ToolLink } from '../components/ToolLink'
 import { Workbench } from '../components/Workbench'
 import { getTool } from '../tools/registry'
 import { NotFound } from './NotFound'
@@ -60,9 +61,9 @@ export function ToolPage() {
             const rt = getTool(r)
             return rt ? (
               <li key={r}>
-                <Link to={`/araclar/${rt.slug}`} className="btn">
+                <ToolLink tool={rt} className="btn">
                   {rt.name}
-                </Link>
+                </ToolLink>
               </li>
             ) : null
           })}

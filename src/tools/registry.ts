@@ -2,6 +2,9 @@ export type ToolStatus = 'ready' | 'soon'
 
 export interface ToolMeta {
   slug: string
+  // The tool's library builds code at runtime and needs a looser CSP on its own
+  // page (see scripts/csp-hash.mjs), so links to it must load a fresh document.
+  fullReload?: boolean
   name: string
   short: string
   icon: string
@@ -163,6 +166,7 @@ export const TOOLS: ToolMeta[] = [
   },
   {
     slug: 'arka-plan-sil',
+    fullReload: true,
     name: 'Arka plan sil',
     short: 'Fotoğrafın arka planını kaldır, şeffaf PNG al.',
     icon: 'cutout',
