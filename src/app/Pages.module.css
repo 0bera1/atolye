@@ -1,0 +1,120 @@
+.page {
+  padding-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.page h1 {
+  font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+  font-weight: 700;
+}
+
+.lead {
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.prose {
+  max-width: 68ch;
+}
+
+.prose h2 {
+  font-size: 1.15rem;
+  margin-top: 10px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.toolList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 12px;
+}
+
+.toolRow {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  height: 100%;
+  padding: 16px 18px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+
+a.toolRow:hover {
+  border-color: var(--accent);
+}
+
+.toolRow svg {
+  color: var(--accent);
+  flex: none;
+  margin-top: 2px;
+}
+
+.soon {
+  border-style: dashed;
+  background: transparent;
+}
+
+.toolWrap {
+  max-width: 520px;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 68ch;
+  margin-top: 14px;
+}
+
+.block h2 {
+  font-size: 1.2rem;
+}
+
+.steps {
+  margin: 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.faq {
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-input);
+  background: var(--surface);
+  padding: 0 16px;
+}
+
+.faq summary {
+  min-height: var(--tap);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.faq p {
+  padding-bottom: 14px;
+  color: var(--muted);
+}
+
+.related {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
