@@ -7,13 +7,15 @@ export default defineConfig({
   workers: 1,
   reporter: [['list']],
   use: {
-    baseURL: 'http://localhost:4173',
+    baseURL: process.env.E2E_BASE ?? 'http://localhost:4173',
     acceptDownloads: true,
   },
-  webServer: {
-    command: 'npm run build && npx vite preview --port 4173 --strictPort',
-    url: 'http://localhost:4173',
-    reuseExistingServer: true,
-    timeout: 300_000,
-  },
+  webServer: process.env.E2E_BASE
+    ? undefined
+    : {
+        command: 'npm run build && npx vite preview --port 4173 --strictPort',
+        url: 'http://localhost:4173',
+        reuseExistingServer: true,
+        timeout: 300_000,
+      },
 })
