@@ -2,7 +2,7 @@ import { closeSync, mkdirSync, openSync, truncateSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { PDFDocument } from 'pdf-lib'
-import { expect, makePdf, makePng, makeWav, readBytes, test } from './fixtures'
+import { expect, expectNoLeak, makePdf, makePng, makeWav, readBytes, test } from './fixtures'
 
 const SHOTS = process.env.SHOTS_DIR
 
@@ -43,7 +43,7 @@ test('pdf-sikistir really shrinks an image-heavy PDF', async ({ page, net }) => 
   expect(out.length).toBeLessThan(bytes.length)
   expect((await PDFDocument.load(out)).getPageCount()).toBe(2)
   await expect(page.getByText(/küçüldü/)).toBeVisible()
-  expect(net.external).toEqual([])
+  expectNoLeak(net)
 })
 
 test('large file shows a memory warning but is not blocked', async ({ page }) => {
@@ -87,7 +87,7 @@ test('ses-kes: dragging on the waveform moves the handles', async ({ page, net }
   // preview starts and can be stopped
   await page.getByRole('button', { name: 'Önizle' }).click()
   await expect(page.getByRole('button', { name: /Durdur|Önizle/ })).toBeVisible()
-  expect(net.external).toEqual([])
+  expectNoLeak(net)
 })
 
 test('no horizontal scroll with tools loaded (390/768/1280, light+dark)', async ({ browser }) => {

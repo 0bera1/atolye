@@ -15,7 +15,7 @@ Sunucu yok, arka uç yok, harici API yok. Seçilen dosyalar hiçbir ağ isteğin
 | Her rota için statik HTML (ön-render), SEO etiketleri, JSON-LD | Çalışıyor                                      |
 | PWA ve çevrimdışı çalışma                                      | **Henüz yapılmadı**                            |
 | Lighthouse ölçümü                                              | **Henüz yapılmadı**                            |
-| GitHub Pages dağıtım iş akışı, özel alan adı                   | **Henüz yapılmadı**                            |
+| Cloudflare Pages dağıtımı, atolye.beraekimci.com.tr            | Yayında                                        |
 | PDF imzala, Resimden PDF, QR kod üret, JSON biçimlendir        | Sonraki aşama ("Yakında" kartı olarak görünür) |
 
 ## Araçlar
@@ -127,16 +127,31 @@ Uçtan uca testler her araca gerçek bir örnek dosya yükler, indirilen çıkt�
 - Yalnızca tema tercihi `localStorage`'a yazılır; erişilemezse sessizce yutulur.
 - İçerik Güvenlik Politikası (CSP) her sayfada `meta` etiketiyle uygulanır: `connect-src 'self' blob: data:`, harici script yok. `blob:` ve `data:` yalnızca tarayıcı içi yerel veri içindir. Satır içi betikler derleme sonrası `scripts/csp-hash.mjs` ile sha256 karmasına bağlanır, `unsafe-inline` kullanılmaz.
 
-## Dağıtım (planlanan, henüz yapılmadı)
+## Dağıtım
 
-Hedef GitHub Pages ve Cloudflare'de yönetilen özel alan adıdır. Yapılandırma ortam değişkenleriyle olacak:
+Canlı adres: **https://atolye.beraekimci.com.tr**
 
-- `VITE_BASE`: özel alan adında `/`, alt yolda `/atolye/`.
-- `VITE_SITE_URL`: canonical ve Open Graph adresleri için site kökü.
+Site, Cloudflare Pages üzerinde (`atolye` projesi) doğrudan yükleme ile yayındadır. Alan adı Cloudflare DNS'te `atolye` CNAME kaydıyla Pages projesine bağlıdır (`atolye-f42.pages.dev`).
 
-GitHub Actions iş akışı (`.github/workflows/deploy.yml`), `public/CNAME` yer tutucusu ve Cloudflare DNS adımları sonraki aşamada eklenecek.
+```bash
+# CLOUDFLARE_API_TOKEN (Pages düzenleme yetkili) ve CLOUDFLARE_ACCOUNT_ID ortam değişkenleri tanımlı olmalı
+npm run deploy      # build + wrangler pages deploy dist
+```
+
+Token ve hesap kimliği depoya yazılmaz.
+
+- `public/_headers`: güvenlik başlıkları (`nosniff`, `Referrer-Policy: no-referrer`, `Permissions-Policy`, `X-Frame-Options`) ve değişmeyen dosyalar için uzun süreli önbellek.
+- `.env.production`: `VITE_SITE_URL`, canonical ve Open Graph adresleri için site kökü. `VITE_BASE` varsayılanı `/` olduğu için alt yola dağıtımda ayrıca verilir.
+- `public/404.html` derlemede üretilir; bilinmeyen adreslerde gösterilir ve `noindex` taşır.
+- `.github/workflows/ci.yml`: her push'ta lint, birim testleri ve derleme. Dağıtım otomatik değildir.
+
+### Cloudflare'in otomatik analitik betiği
+
+`beraekimci.com.tr` bölgesinde Cloudflare Web Analytics otomatik kurulumu açıktır ve tüm alt alan adlarının HTML'ine `static.cloudflareinsights.com/beacon.min.js` ekler. Atölye'nin CSP'si bu betiği engeller; tarayıcıdan çıkmaz ve dosya verisiyle ilgisi yoktur, ancak tarayıcı konsolunda bir CSP hatası görünür. Kalıcı çözüm Cloudflare panelinde bu alt alan adı için otomatik kurulumu kapatmaktır (bölgedeki diğer siteleri de etkilediği için yapılmadı). Uçtan uca testler bu engellenen isteği ayrı kaydeder.
 
 ## Kararlar
+
+- **Dağıtım Cloudflare Pages.** İlk plan GitHub Pages idi; mevcut token'larla Pages etkinleştirilemediği ve alan adındaki diğer siteler zaten Cloudflare Pages kullandığı için Cloudflare Pages seçildi. Bu sayede gerçek yanıt başlıkları (`_headers`) da kullanılabiliyor.
 
 - **React 18 ve react-router-dom 6.** `vite-react-ssg` react-router-dom 7 ile çakıştı; spesifikasyondaki React 18 ile uyumlu olması için bu sürümlere sabitlendi. `npm audit` router 6 için iki orta seviye uyarı verir (açık yönlendirme, SSR hidrasyon); düzeltmesi yoktur, kullanıcı girdisiyle yönlendirme yapılmadığı için etkisizdir.
 - **ESLint.** Vite şablonu oxlint getiriyordu; istenen ESLint ile değiştirildi.

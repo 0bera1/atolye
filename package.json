@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "predev": "node scripts/copy-assets.mjs",
-    "prebuild": "node scripts/copy-assets.mjs"
+    "prebuild": "node scripts/copy-assets.mjs",
+    "deploy": "npm run build && npx --yes wrangler@4 pages deploy dist --project-name atolye --branch main"
   },
   "dependencies": {
     "@imgly/background-removal": "^1.4.5",

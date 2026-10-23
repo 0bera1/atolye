@@ -50,25 +50,36 @@ export async function makePng(page: Page, w: number, h: number, text?: string): 
 
 export interface NetLog {
   external: string[]
+  // requests the browser refused to send because of our CSP; nothing left the device
+  blocked: string[]
   withBody: string[]
 }
 
 export const test = base.extend<{ net: NetLog }>({
-  net: async ({ page }, provide) => {
-    const log: NetLog = { external: [], withBody: [] }
+  net: async ({ page, baseURL }, provide) => {
+    const ownHosts = new Set([
+      'localhost',
+      '127.0.0.1',
+      new URL(baseURL ?? 'http://localhost').hostname,
+    ])
+    const log: NetLog = { external: [], blocked: [], withBody: [] }
     page.on('request', (r) => {
       const url = new URL(r.url())
-      if (!['localhost', '127.0.0.1'].includes(url.hostname) && url.protocol.startsWith('http')) {
+      if (!ownHosts.has(url.hostname) && url.protocol.startsWith('http')) {
         log.external.push(r.url())
       }
       if (r.postData() || r.method() !== 'GET') log.withBody.push(`${r.method()} ${r.url()}`)
+    })
+    page.on('requestfailed', (r) => {
+      if (r.failure()?.errorText === 'csp') log.blocked.push(r.url())
     })
     await provide(log)
   },
 })
 
 export function expectNoLeak(net: NetLog) {
-  expect(net.external, 'requests to other origins').toEqual([])
+  const leaked = net.external.filter((u) => !net.blocked.includes(u))
+  expect(leaked, 'requests to other origins').toEqual([])
   expect(net.withBody, 'non-GET or body-carrying requests').toEqual([])
 }
 

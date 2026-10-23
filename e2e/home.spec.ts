@@ -1,4 +1,4 @@
-import { expect, makePng, test } from './fixtures'
+import { expect, expectNoLeak, makePng, test } from './fixtures'
 
 const READY = [
   ['PDF birleştir', 'PDF’leri birleştir'],
@@ -13,7 +13,8 @@ const READY = [
 test('every drawer opens its tool on the home page without console errors', async ({ page }) => {
   const errors: string[] = []
   page.on('console', (m) => {
-    if (m.type() === 'error') errors.push(m.text())
+    // host-injected analytics beacons are blocked by our CSP; that console message is expected
+    if (m.type() === 'error' && !m.text().includes('cloudflareinsights')) errors.push(m.text())
   })
   page.on('pageerror', (e) => errors.push(String(e)))
   await page.goto('/')
@@ -41,7 +42,7 @@ test('background removal works when opened from the home page', async ({ page, n
   const dl = page.waitForEvent('download', { timeout: 200_000 })
   await page.getByRole('button', { name: 'Arka planı sil' }).click()
   expect((await dl).suggestedFilename()).toBe('a-seffaf.png')
-  expect(net.external).toEqual([])
+  expectNoLeak(net)
 })
 
 test('theme toggle switches and keeps the choice', async ({ page }) => {
