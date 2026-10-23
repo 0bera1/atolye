@@ -1,9 +1,17 @@
 import { useState } from 'react'
 import { DrawerCard } from '../components/DrawerCard'
+import { DrawerIllustration } from '../components/DrawerIllustration'
+import { Icon } from '../components/Icon'
 import { Seo } from '../components/Seo'
 import { Workbench } from '../components/Workbench'
-import { getTool, TOOLS } from '../tools/registry'
+import { getTool, GROUPS, TOOLS } from '../tools/registry'
 import styles from './Home.module.css'
+
+const TRUST = [
+  { icon: 'lock', text: 'Dosya cihazında kalır' },
+  { icon: 'check', text: 'Hesap gerekmez' },
+  { icon: 'offline', text: 'Sunucu yok, izleyici yok' },
+]
 
 export function Home() {
   const [slug, setSlug] = useState('pdf-birlestir')
@@ -26,27 +34,49 @@ export function Home() {
         path="/"
       />
       <section className={`container ${styles.hero}`}>
-        <h1>
-          İşini cihazında bitir.
-          <br />
-          Dosyan hiçbir yere gitmesin.
-        </h1>
-        <p>
-          PDF, görsel ve ses araçları tarayıcının içinde çalışır. Sunucu yok, yükleme yok, hesap
-          yok.
-        </p>
+        <div className={styles.heroText}>
+          <p className={`${styles.eyebrow} mono`}>Tarayıcıda çalışan araç atölyesi</p>
+          <h1>
+            İşini cihazında bitir.
+            <br />
+            <span className={styles.accent}>Dosyan hiçbir yere gitmesin.</span>
+          </h1>
+          <p className={styles.lead}>
+            PDF, görsel ve ses araçları tarayıcının içinde çalışır. Sunucu yok, yükleme yok, hesap
+            yok. Çekmeceyi aç, işini gör, kapat.
+          </p>
+          <ul className={styles.trust}>
+            {TRUST.map((t) => (
+              <li key={t.text}>
+                <Icon name={t.icon} size={18} />
+                {t.text}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className={styles.art}>
+          <DrawerIllustration />
+        </div>
       </section>
 
       <div className={`container ${styles.layout}`}>
-        <section aria-labelledby="cekmeceler">
-          <h2 id="cekmeceler" className={styles.sectionTitle}>
+        <section aria-labelledby="cekmeceler" className={styles.drawers}>
+          <h2 id="cekmeceler" className="sr-only">
             Çekmeceler
           </h2>
-          <div className={styles.grid}>
-            {TOOLS.map((t) => (
-              <DrawerCard key={t.slug} tool={t} selected={t.slug === slug} onSelect={select} />
-            ))}
-          </div>
+          {GROUPS.map((g) => (
+            <div key={g.id} className={styles.group}>
+              <h3 className={`${styles.groupTitle} mono`}>{g.label}</h3>
+              <div className={styles.grid}>
+                {g.slugs.map((s) => {
+                  const t = getTool(s)
+                  return t ? (
+                    <DrawerCard key={s} tool={t} selected={s === slug} onSelect={select} />
+                  ) : null
+                })}
+              </div>
+            </div>
+          ))}
         </section>
         <aside className={styles.side}>
           <Workbench key={tool.slug} tool={tool} />

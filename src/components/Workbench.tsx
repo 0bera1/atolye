@@ -39,10 +39,17 @@ export function Workbench({ tool }: { tool: ToolMeta }) {
 
   return (
     <section className={styles.bench} aria-labelledby={`${inputId}-t`}>
-      <p className={`${styles.label} mono`}>Tezgâh</p>
-      <h2 id={`${inputId}-t`} className={styles.title}>
-        {tool.name}
-      </h2>
+      <header className={styles.head}>
+        <span className={styles.icon}>
+          <Icon name={tool.icon} size={20} />
+        </span>
+        <div>
+          <p className={`${styles.label} mono`}>Tezgâh</p>
+          <h2 id={`${inputId}-t`} className={styles.title}>
+            {tool.name}
+          </h2>
+        </div>
+      </header>
 
       <label
         htmlFor={inputId}

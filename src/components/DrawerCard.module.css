@@ -86,3 +86,23 @@
   color: var(--muted);
   font-size: 0.72rem;
 }
+
+.card:hover:not(:disabled):not(.selected) {
+  transform: translateY(-2px);
+}
+
+.card {
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.15s;
+}
+
+.handle {
+  transition: width 0.15s;
+}
+
+.selected .handle {
+  width: 46px;
+  margin-left: -23px;
+}

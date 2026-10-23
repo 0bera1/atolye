@@ -26,8 +26,16 @@ export function Layout() {
         <Outlet />
       </main>
       <footer className={styles.footer}>
-        <div className="container">
-          <p>Dosyaların cihazından çıkmaz. Sunucu yok, hesap yok, izleyici yok.</p>
+        <div className={`container ${styles.footerBar}`}>
+          <div>
+            <p className={styles.footerBrand}>Atölye</p>
+            <p>Dosyaların cihazından çıkmaz. Sunucu yok, hesap yok, izleyici yok.</p>
+          </div>
+          <nav aria-label="Alt gezinme" className={styles.footerNav}>
+            <Link to="/araclar">Araçlar</Link>
+            <Link to="/gizlilik">Gizlilik</Link>
+            <Link to="/hakkinda">Hakkında</Link>
+          </nav>
         </div>
       </footer>
     </>

@@ -85,3 +85,39 @@
   color: var(--muted);
   font-size: 0.92rem;
 }
+
+.footerBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 40px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.footerBrand {
+  margin-bottom: 4px;
+  color: var(--text);
+  font-family: var(--font-head);
+  font-weight: 700;
+}
+
+.footerNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+
+.footerNav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 12px;
+  border-radius: 999px;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.footerNav a:hover {
+  color: var(--text);
+  background: var(--soft);
+}

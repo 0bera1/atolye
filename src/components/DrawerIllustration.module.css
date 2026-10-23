@@ -1,0 +1,41 @@
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.body {
+  fill: var(--soft);
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.drawer rect:first-child {
+  fill: var(--surface);
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.handle {
+  fill: var(--line);
+}
+
+.sheets rect {
+  fill: var(--surface);
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.open rect:first-child {
+  fill: var(--accent);
+}
+
+.openHandle {
+  fill: var(--on-accent);
+  opacity: 0.75;
+}
+
+.openLine {
+  fill: var(--on-accent);
+  opacity: 0.35;
+}

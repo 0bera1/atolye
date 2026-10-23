@@ -309,3 +309,24 @@ export const READY_TOOLS = TOOLS.filter((t) => t.status === 'ready')
 export function getTool(slug: string): ToolMeta | undefined {
   return TOOLS.find((t) => t.slug === slug)
 }
+
+export interface ToolGroup {
+  id: string
+  label: string
+  slugs: string[]
+}
+
+export const GROUPS: ToolGroup[] = [
+  { id: 'pdf', label: 'PDF', slugs: ['pdf-birlestir', 'pdf-bol', 'pdf-sikistir'] },
+  {
+    id: 'gorsel',
+    label: 'Görsel',
+    slugs: ['gorsel-boyutlandir', 'gorsel-donustur', 'arka-plan-sil'],
+  },
+  { id: 'ses', label: 'Ses ve metin', slugs: ['metin-cikar-ocr', 'ses-kes'] },
+  {
+    id: 'yakinda',
+    label: 'Yakında',
+    slugs: ['pdf-imzala', 'resimden-pdf', 'qr-kod-uret', 'json-bicimlendir'],
+  },
+]
